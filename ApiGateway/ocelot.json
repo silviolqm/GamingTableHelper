@@ -1,0 +1,31 @@
+{
+    "GlobalConfiguration":{
+        "BaseUrl": "https://localhost:7000"
+    },
+    "Routes": [
+        {
+            "UpstreamPathTemplate": "/gateway/exemplo",
+            "UpstreamHttpMethod": "GET",
+            "DownstreamPathTemplate": "/api/exemplo",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                }
+            ],
+            "RateLimitOptions":{
+                "EnableRateLimiting": true,
+                "Period": "20s",
+                "Limit": 5,
+                "PeriodTimespan": 30
+            },
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey": "Bearer"
+            },
+            "RouteClaimsRequirement":{
+                "Role": "Administrator"
+            }
+        }
+    ]
+}
