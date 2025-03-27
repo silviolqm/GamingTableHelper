@@ -4,6 +4,18 @@
     },
     "Routes": [
         {
+            "UpstreamPathTemplate": "/gateway/auth",
+            "UpstreamHttpMethod": "POST",
+            "DownstreamPathTemplate": "/api/auth",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                }
+            ]
+        },
+        {
             "UpstreamPathTemplate": "/gateway/exemplo",
             "UpstreamHttpMethod": "GET",
             "DownstreamPathTemplate": "/api/exemplo",
@@ -11,7 +23,7 @@
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
-                    "Port": 7001
+                    "Port": 7002
                 }
             ],
             "RateLimitOptions":{
@@ -21,10 +33,8 @@
                 "PeriodTimespan": 30
             },
             "AuthenticationOptions":{
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement":{
-                "Role": "Administrator"
+                "AuthenticationProviderKeys": [ "Bearer" ],
+                "AllowedScopes": []
             }
         }
     ]

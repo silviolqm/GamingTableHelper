@@ -1,0 +1,2 @@
+GET https://localhost:7002/api/exemplo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJleHAiOjE3NDMxMDcyMTEsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDAifQ.690_2D-q1AljPEqFKsMb157ojeKPCTO6DrAIVdjI5Q4
