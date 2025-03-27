@@ -9,19 +9,20 @@ namespace Shared.JwtConfiguration
     {
         // The security key should be stored safely in the production environment.
         public const string SECURITY_KEY = "super-secret-keysuper-secret-key";
-        public const string VALID_ISSUER = "https://localhost:7000";
-        public const string VALID_AUDIENCE = "https://localhost:7002";
+        public const string VALID_ISSUER = "GamingTableHelper";
+        public const string VALID_AUDIENCE = "https://localhost:7000";
 
         public static void AddJwtAuthentication (this IServiceCollection services)
         {
             services.AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
-                options.RequireHttpsMetadata = false;
+                options.UseSecurityTokenValidators = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidIssuer = VALID_ISSUER,
-                    ValidateAudience = false,
+                    ValidateAudience = true,
+                    ValidAudience = VALID_AUDIENCE,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECURITY_KEY))
                 };

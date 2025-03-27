@@ -31,11 +31,13 @@ namespace AuthService.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Name, user.UserName!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var securityToken = new JwtSecurityToken
             (
                 issuer: JwtExtensions.VALID_ISSUER,
+                audience: JwtExtensions.VALID_AUDIENCE,
                 expires: expiration,
                 claims: claims,
                 signingCredentials: signingCreds
