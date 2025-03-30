@@ -10,20 +10,8 @@ namespace AuthService.Services
 {
     public class JwtService : IJwtService
     {
-        List<User> placeholderUsers = new() 
+        public string GenerateAuthToken(ApplicationUser user)
         {
-            new("admin", "123456e7"),
-            new("user01", "123456e7")
-        };
-
-        public string? GenerateAuthToken(LoginRequestDto loginRequestDto)
-        {
-            var user = placeholderUsers.FirstOrDefault(u => u.UserName == loginRequestDto.Username && u.PasswordHash == loginRequestDto.Password);
-            if (user is null)
-            {
-                return null;
-            }
-
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtExtensions.SECURITY_KEY));
             var signingCreds = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var expiration = DateTime.Now.AddMinutes(15);
