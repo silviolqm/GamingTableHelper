@@ -1,4 +1,8 @@
+using AuthService.Data;
+using AuthService.Models;
 using AuthService.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shared.JwtConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +13,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddJwtAuthentication();
 builder.Services.AddSingleton<IJwtService, JwtService>();
+
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnectionString")));
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
 
