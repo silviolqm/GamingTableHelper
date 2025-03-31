@@ -57,8 +57,8 @@ namespace AuthService.Controllers
             {
                 return Problem(
                     type: "Bad Request",
-                    title: "Invalid User Name",
-                    detail: "User name is already taken.",
+                    title: "Invalid Username",
+                    detail: "Username is already taken.",
                     statusCode: StatusCodes.Status400BadRequest);
             }
 

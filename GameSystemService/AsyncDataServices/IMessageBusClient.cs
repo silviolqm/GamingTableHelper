@@ -4,9 +4,6 @@ namespace GameSystemService.AsyncDataServices
 {
     public interface IMessageBusClient
     {
-        public interface IMessageBusClient
-        {
-            Task PublishNewGameSystem(GameSystemPublishedDto gameSystemPublishedDto);
-        }
+        Task PublishGameSystemEvent(GameSystemEventDto gameSystemPublishedDto);
     }
 }
