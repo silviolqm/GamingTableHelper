@@ -1,6 +1,6 @@
 namespace GameSystemService.Dtos
 {
-    public class GameSystemPublishedDto
+    public class GameSystemEventDto
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }

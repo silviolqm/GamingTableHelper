@@ -9,8 +9,10 @@ namespace GameSystemService.Profiles
         public GameSystemProfile()
         {
             CreateMap<GameSystem, GameSystemReadDto>();
+            CreateMap<GameSystem, GameSystemEventDto>();
             CreateMap<GameSystemCreateDto, GameSystem>();
-            CreateMap<GameSystemReadDto, GameSystemPublishedDto>();
+            CreateMap<GameSystemUpdateDto, GameSystem>();
+            CreateMap<GameSystemReadDto, GameSystemEventDto>();
             /*CreateMap<GameSystem, GrpcGameSystemModel>()
                 .ForMember(dest => dest.GameSystemId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));*/

@@ -44,9 +44,9 @@ namespace GameSystemService.AsyncDataServices
             Console.WriteLine($"Connection to MessageBus shut down.");
         }
 
-        public async Task PublishNewGameSystem(GameSystemPublishedDto GameSystemPublishedDto)
+        public async Task PublishGameSystemEvent(GameSystemEventDto gameSystemEventDto)
         {
-            var message = JsonSerializer.Serialize(GameSystemPublishedDto);
+            var message = JsonSerializer.Serialize(gameSystemEventDto);
             if (_connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
