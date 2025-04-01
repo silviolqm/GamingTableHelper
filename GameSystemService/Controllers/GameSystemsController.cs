@@ -9,13 +9,13 @@ namespace GameSystemService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GameSystemController : ControllerBase
+    public class GameSystemsController : ControllerBase
     {
         private readonly IGameSystemRepo _repo;
         private readonly IMapper _mapper;
         private readonly IMessageBusClient _messageBusClient;
 
-        public GameSystemController(IGameSystemRepo repo, IMapper mapper, IMessageBusClient messageBusClient)
+        public GameSystemsController(IGameSystemRepo repo, IMapper mapper, IMessageBusClient messageBusClient)
         {
             _repo = repo;
             _mapper = mapper;
@@ -61,7 +61,7 @@ namespace GameSystemService.Controllers
             return CreatedAtRoute(nameof(GetGameSystemById), new {Id = gameSystemReadDto.Id}, gameSystemReadDto);
         }
 
-        [HttpPost]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteGameSystem(Guid id)
         {
             var gameSystemInRepo = _repo.GetGameSystemById(id);

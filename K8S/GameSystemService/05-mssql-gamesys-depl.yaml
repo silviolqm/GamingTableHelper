@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-gamesys-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql-gamesys
+  template:
+    metadata:
+      labels:
+        app: mssql-gamesys
+    spec:
+      containers:
+        - name: mssql-gamesys
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          ports:
+            - containerPort: 1433
+          env:
+          - name: MSSQL_PID
+            value: "Express"
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: MSSQL_SA_PASSWORD
+            value: "Password!1" #This password should be stored in a safe place when in a real-world scenario
+          volumeMounts:
+            - mountPath: var/opt/mssql/data
+              name: mssql-gamesys-db
+      volumes:
+      - name: mssql-gamesys-db
+        persistentVolumeClaim:
+          claimName: mssql-gamesys-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-gamesys-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: mssql-gamesys
+  ports:
+  - name: mssql-gamesys
+    protocol: TCP
+    port: 1433
+    targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-gamesys-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: mssql-gamesys
+  ports:
+  - protocol: TCP
+    port: 1534
+    targetPort: 1433
