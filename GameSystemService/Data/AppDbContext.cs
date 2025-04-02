@@ -9,6 +9,6 @@ namespace GameSystemService.Data
         {
             
         }
-        public DbSet<GameSystem> gameSystems { get; set; }
+        public DbSet<GameSystem> GameSystems { get; set; }
     }
 }

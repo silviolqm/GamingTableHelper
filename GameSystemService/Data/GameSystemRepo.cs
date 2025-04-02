@@ -18,7 +18,7 @@ namespace GameSystemService.Data
             {
                 throw new ArgumentNullException(nameof(gameSystem));
             }
-            _context.gameSystems.Add(gameSystem);
+            _context.GameSystems.Add(gameSystem);
         }
 
         public void DeleteGameSystem(GameSystem gameSystem)
@@ -27,7 +27,7 @@ namespace GameSystemService.Data
             {
                 throw new ArgumentNullException(nameof(gameSystem));
             }
-            _context.gameSystems.Remove(gameSystem);
+            _context.GameSystems.Remove(gameSystem);
         }
 
         public void EditGameSystem(GameSystem gameSystem)
@@ -37,7 +37,7 @@ namespace GameSystemService.Data
                 throw new ArgumentNullException(nameof(gameSystem));
             }
 
-            var existingGameSystem = _context.gameSystems.FirstOrDefault(gs => gs.Id == gameSystem.Id);
+            var existingGameSystem = _context.GameSystems.FirstOrDefault(gs => gs.Id == gameSystem.Id);
             if (existingGameSystem == null)
             {
                 throw new KeyNotFoundException($"GameSystem with ID {gameSystem.Id} not found.");
@@ -48,12 +48,12 @@ namespace GameSystemService.Data
 
         public IEnumerable<GameSystem> GetAllGameSystems()
         {
-            return _context.gameSystems.ToList();
+            return _context.GameSystems.ToList();
         }
 
         public GameSystem GetGameSystemById(Guid id)
         {
-            return _context.gameSystems.FirstOrDefault(p => p.Id == id)!;
+            return _context.GameSystems.FirstOrDefault(p => p.Id == id)!;
         }
 
         public bool SaveChanges()
