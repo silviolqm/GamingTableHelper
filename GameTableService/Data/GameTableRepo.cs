@@ -11,6 +11,25 @@ namespace GameTableService.Data
             _context = context;
         }
 
+        public bool AddPlayerToGameTable(Guid gameTableId, Guid userId)
+        {
+            var gameTable = _context.GameTables.FirstOrDefault(g => g.Id == gameTableId);
+            if (gameTable == null)
+            {
+                throw new ArgumentNullException(nameof(gameTable));
+            }
+            if (!gameTable.Players.Contains(userId))
+            {
+                gameTable.Players.Add(userId);
+                _context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void CreateGameTable(GameTable gameTable)
         {
             if (gameTable == null)
@@ -48,6 +67,16 @@ namespace GameTableService.Data
         public IEnumerable<GameTable> GetAllGameTables()
         {
             return _context.GameTables.ToList();
+        }
+
+        public IEnumerable<GameTable> GetAllGameTablesByGameSystem(Guid? gameSystemId)
+        {
+            return _context.GameTables.Where(g => g.GameSystemId == gameSystemId);
+        }
+
+        public IEnumerable<GameSystem> GetGameSystems()
+        {
+            return _context.GameSystems.ToList();
         }
 
         public GameTable GetGameTableById(Guid id)

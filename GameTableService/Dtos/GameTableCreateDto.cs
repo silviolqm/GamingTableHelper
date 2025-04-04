@@ -1,25 +1,24 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GameTableService.Models
+namespace GameTableService.Dtos
 {
-    public class GameTable
+    [ValidPlayerRange]
+    public class GameTableCreateDto
     {
-        [Key]
-        public Guid Id { get; set; }
-        [Required]
-        public Guid OwnerUserId { get; set; }
         [Required]
         public Guid GameSystemId { get; set; }
         [Required]
+        [StringLength(100)]
         public required string Name { get; set; }
         [Required]
+        [StringLength(256)]
         public required string Description { get; set; }
         [Required]
+        [Range(1, int.MaxValue)]
         public int MinPlayers { get; set; }
+        [Range(2, int.MaxValue)]
         public int MaxPlayers { get; set; }
-        public ICollection<Guid> Players { get; set; } = new List<Guid>();
         [Required]
         public DateTimeOffset StartDateTime { get; set; }
-        public GameSystem GameSystem { get; set; } = null!; //Navigation property for the model builder in AppDbContext
     }
 }
