@@ -5,7 +5,12 @@ public class ValidPlayerRangeAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        var dto = (GameTableCreateDto)validationContext.ObjectInstance;
+        var dto = validationContext.ObjectInstance as GameTableCreateDto;
+
+        if (dto == null)
+        {
+            return ValidationResult.Success;
+        }
 
         if (dto.MaxPlayers <= dto.MinPlayers)
         {

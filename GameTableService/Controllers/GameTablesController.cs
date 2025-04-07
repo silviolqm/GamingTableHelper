@@ -53,19 +53,10 @@ namespace GameTableService.Controllers
         [HttpPost]
         public ActionResult<GameTableReadDto> CreateGameTable(GameTableCreateDto gameTableCreateDto)
         {
-            if (gameTableCreateDto.StartDateTime <= DateTimeOffset.UtcNow)
-            {
-                return Problem(
-                    type: "Bad Request",
-                    title: "Invalid StartDateTime",
-                    detail: "The game table start date and time should be in the future.",
-                    statusCode: StatusCodes.Status400BadRequest);
-            }
-
             var gameTableToCreate = _mapper.Map<GameTable>(gameTableCreateDto);
 
             //Attaches the userId as the owner of this game table
-            var appUserIdClaim = User.FindFirst("sub");
+            var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
                 return Problem(
@@ -77,6 +68,27 @@ namespace GameTableService.Controllers
             var userId = Guid.Parse(appUserIdClaim.Value);
             gameTableToCreate.OwnerUserId = userId;
 
+            //Validate GameSystemId
+            if (!_repo.GameSystemExists(gameTableCreateDto.GameSystemId))
+            {
+                return Problem(
+                    type: "Bad Request",
+                    title: "Invalid Game System",
+                    detail: "The Game System provided doesn't exist.",
+                    statusCode: StatusCodes.Status400BadRequest);
+            }
+
+            //Validate Start Time for Game Table
+            if (gameTableCreateDto.StartDateTime <= DateTimeOffset.UtcNow)
+            {
+                return Problem(
+                    type: "Bad Request",
+                    title: "Invalid StartDateTime",
+                    detail: "The game table start date and time should be in the future.",
+                    statusCode: StatusCodes.Status400BadRequest);
+            }
+
+            //Success
             _repo.CreateGameTable(gameTableToCreate);
             _repo.SaveChanges();
 
@@ -95,7 +107,7 @@ namespace GameTableService.Controllers
                 return NotFound();
             }
 
-            var appUserIdClaim = User.FindFirst("sub");
+            var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
                 return Problem(
@@ -132,7 +144,7 @@ namespace GameTableService.Controllers
                 return NotFound();
             }
 
-            var appUserIdClaim = User.FindFirst("sub");
+            var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
                 return Problem(
@@ -146,10 +158,10 @@ namespace GameTableService.Controllers
             if (existingGameTable.OwnerUserId == userId)
             {
                 _mapper.Map(gameTableUpdateDto, existingGameTable);
-                _repo.EditGameTable(existingGameTable);
+                _repo.UpdateGameTable(existingGameTable);
                 _repo.SaveChanges();
 
-                return Ok(existingGameTable);
+                return Ok(_mapper.Map<GameTableReadDto>(existingGameTable));
             }
             else
             {
@@ -171,7 +183,16 @@ namespace GameTableService.Controllers
                 return NotFound();
             }
 
-            var appUserIdClaim = User.FindFirst("sub");
+            if (gameTable.Players.Count() >= gameTable.MaxPlayers)
+            {
+                return Problem(
+                    type: "Conflict",
+                    title: "Game Table is full.",
+                    detail: "This Game Table has reached the maximum number of users.",
+                    statusCode: StatusCodes.Status409Conflict);
+            }
+
+            var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
                 return Problem(

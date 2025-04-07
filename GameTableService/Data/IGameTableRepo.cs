@@ -9,9 +9,14 @@ namespace GameTableService.Data
         IEnumerable<GameTable> GetAllGameTablesByGameSystem(Guid? gameSystemId);
         GameTable GetGameTableById(Guid id);
         void CreateGameTable(GameTable gameTable);
-        void EditGameTable(GameTable gameTable);
+        void UpdateGameTable(GameTable gameTable);
         void DeleteGameTable(GameTable gameTable);
         IEnumerable<GameSystem> GetGameSystems();
         bool AddPlayerToGameTable(Guid gameTableId, Guid userId);
+        bool GameSystemExists(Guid gameSystemId);
+        bool ExternalGameSystemExists(Guid externalGameSystemId);
+        void CreateGameSystem(GameSystem gameSystem);
+        void DeleteGameSystem(GameSystem gameSystem);
+        void UpdateGameSystem(GameSystem gameSystem);
     }
 }
