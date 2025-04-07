@@ -1,3 +1,4 @@
+using GameTableService.AsyncDataServices;
 using GameTableService.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.JwtConfiguration;
@@ -12,6 +13,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IGameTableRepo, GameTableRepo>();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("GameTableConnectionString")));
 builder.Services.AddJwtAuthentication();
+
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+builder.Services.AddHostedService<MessageBusSubscriber>();
 
 var app = builder.Build();
 

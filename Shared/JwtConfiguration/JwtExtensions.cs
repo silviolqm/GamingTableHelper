@@ -10,7 +10,7 @@ namespace Shared.JwtConfiguration
         // The security key should be stored safely in the production environment.
         public const string SECURITY_KEY = "super-secret-keysuper-secret-key";
         public const string VALID_ISSUER = "GamingTableHelper";
-        public const string VALID_AUDIENCE = "https://localhost:7000";
+        public const string VALID_AUDIENCE = "https://localhost:7003";
 
         public static void AddJwtAuthentication (this IServiceCollection services)
         {

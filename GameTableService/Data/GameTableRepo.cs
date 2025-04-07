@@ -30,6 +30,15 @@ namespace GameTableService.Data
             }
         }
 
+        public void CreateGameSystem(GameSystem gameSystem)
+        {
+            if (gameSystem == null)
+            {
+                throw new ArgumentNullException(nameof(gameSystem));
+            }
+            _context.GameSystems.Add(gameSystem);
+        }
+
         public void CreateGameTable(GameTable gameTable)
         {
             if (gameTable == null)
@@ -48,7 +57,7 @@ namespace GameTableService.Data
             _context.GameTables.Remove(gameTable);
         }
 
-        public void EditGameTable(GameTable gameTable)
+        public void UpdateGameTable(GameTable gameTable)
         {
             if (gameTable == null)
             {
@@ -62,6 +71,23 @@ namespace GameTableService.Data
             }
 
             _context.Entry(existingGameTable).CurrentValues.SetValues(gameTable);
+        }
+
+        public bool ExternalGameSystemExists(Guid externalGameSystemId)
+        {
+            return _context.GameSystems.Any(p => p.ExternalId == externalGameSystemId);
+        }
+
+        public bool GameSystemExists(Guid gameSystemId)
+        {
+            if (_context.GameSystems.FirstOrDefault(gs => gs.Id == gameSystemId) == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public IEnumerable<GameTable> GetAllGameTables()
@@ -87,6 +113,31 @@ namespace GameTableService.Data
         public bool SaveChanges()
         {
             return _context.SaveChanges() >= 0;
+        }
+
+        public void DeleteGameSystem(GameSystem gameSystem)
+        {
+            if (gameSystem == null)
+            {
+                throw new ArgumentNullException(nameof(gameSystem));
+            }
+            _context.GameSystems.Remove(gameSystem);
+        }
+
+        public void UpdateGameSystem(GameSystem gameSystem)
+        {
+            if (gameSystem == null)
+            {
+                throw new ArgumentNullException(nameof(gameSystem));
+            }
+
+            var existingGameSystem = _context.GameSystems.FirstOrDefault(gs => gs.Id == gameSystem.Id);
+            if (existingGameSystem == null)
+            {
+                throw new KeyNotFoundException($"GameSystem with ID {gameSystem.Id} not found.");
+            }
+
+            _context.Entry(existingGameSystem).CurrentValues.SetValues(gameSystem);
         }
     }
 }

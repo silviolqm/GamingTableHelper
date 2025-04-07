@@ -11,6 +11,7 @@ namespace GameTableService.Profiles
             CreateMap<GameSystem, GameSystemReadDto>();
             CreateMap<GameTableCreateDto, GameTable>();
             CreateMap<GameTable, GameTableReadDto>();
+            CreateMap<GameTableUpdateDto, GameTable>();
             CreateMap<GameSystemEventDto, GameSystem>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
             /*CreateMap<GrpcPlatformModel, Platform>()
