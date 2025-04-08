@@ -17,6 +17,7 @@ builder.Services.AddJwtAuthentication();
 
 builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+builder.Services.AddSingleton<IMessageBusPublisher, MessageBusPublisher>();
 
 builder.Services.AddScoped<IGameSystemDataClient, GameSystemDataClient>();
 

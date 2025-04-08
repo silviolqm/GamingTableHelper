@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using GameTableService.AsyncDataServices;
 using GameTableService.Data;
 using GameTableService.Dtos;
 using GameTableService.Models;
@@ -14,11 +15,13 @@ namespace GameTableService.Controllers
     {
         private readonly IGameTableRepo _repo;
         private readonly IMapper _mapper;
+        private readonly IMessageBusPublisher _messageBusPublisher;
 
-        public GameTablesController(IGameTableRepo repo, IMapper mapper)
+        public GameTablesController(IGameTableRepo repo, IMapper mapper, IMessageBusPublisher messageBusPublisher)
         {
             _repo = repo;
             _mapper = mapper;
+            _messageBusPublisher = messageBusPublisher;
         }
 
         [HttpGet]
@@ -175,7 +178,7 @@ namespace GameTableService.Controllers
 
         [Authorize]
         [HttpPatch("{id}")]
-        public ActionResult JoinGameTable(Guid id)
+        public async Task<ActionResult> JoinGameTable(Guid id)
         {
             var gameTable = _repo.GetGameTableById(id);
             if (gameTable == null)
@@ -205,6 +208,20 @@ namespace GameTableService.Controllers
 
             if (_repo.AddPlayerToGameTable(id, userId))
             {
+                if (gameTable.Players.Count() == gameTable.MaxPlayers)
+                {
+                    try
+                    {
+                        var gameTableFullEventDto = _mapper.Map<GameTableFullEventDto>(gameTable);
+                        gameTableFullEventDto.Event = "GameTable_Full";
+                        await _messageBusPublisher.PublishGameTableFullEvent(gameTableFullEventDto);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Could not send message to MessageBus: {ex.Message}");
+                    }
+                }
+
                 var gameTableReadDto = _mapper.Map<GameTableReadDto>(gameTable);
                 return Ok(gameTableReadDto);
             }

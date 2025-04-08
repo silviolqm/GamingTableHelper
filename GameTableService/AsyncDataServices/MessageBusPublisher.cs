@@ -1,18 +1,18 @@
 using System.Text;
 using System.Text.Json;
-using GameSystemService.Dtos;
+using GameTableService.Dtos;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace GameSystemService.AsyncDataServices
+namespace GameTableService.AsyncDataServices
 {
-    public class MessageBusClient : IMessageBusClient, IAsyncDisposable
+    public class MessageBusPublisher : IMessageBusPublisher
     {
         private readonly IConfiguration _configuration;
         private IConnection _connection;
         private IChannel _channel;
 
-        public MessageBusClient(IConfiguration configuration)
+        public MessageBusPublisher(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -25,7 +25,7 @@ namespace GameSystemService.AsyncDataServices
             {
                 _connection = await factory.CreateConnectionAsync();
                 _channel = await _connection.CreateChannelAsync();
-                await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeGameSys"]!, type: ExchangeType.Fanout);
+                await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeGameTable"]!, type: ExchangeType.Fanout);
 
                 _connection.ConnectionShutdownAsync += RabbitMQ_ConnectionShutdown;
 
@@ -42,14 +42,14 @@ namespace GameSystemService.AsyncDataServices
             Console.WriteLine($"Connection to MessageBus shut down.");
         }
 
-        public async Task PublishGameSystemEvent(GameSystemEventDto gameSystemEventDto)
+        public async Task PublishGameTableFullEvent(GameTableFullEventDto gameTableFullEventDto)
         {
             if (_channel == null)
             {
                 await SetupMessageBusConnection();
             }
 
-            var message = JsonSerializer.Serialize(gameSystemEventDto);
+            var message = JsonSerializer.Serialize(gameTableFullEventDto);
             if (_connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
@@ -65,7 +65,7 @@ namespace GameSystemService.AsyncDataServices
         {
             byte[] messageBody = Encoding.UTF8.GetBytes(message);
             await _channel.BasicPublishAsync(
-                exchange: _configuration["RabbitMQExchangeGameSys"]!,
+                exchange: _configuration["RabbitMQExchangeGameTable"]!,
                 routingKey: string.Empty,
                 body: messageBody);
             Console.WriteLine($"Message Sent: {message}");

@@ -17,6 +17,7 @@ namespace GameTableService.Profiles
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
             CreateMap<GrpcGameSystemModel, GameSystem>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<GameTable, GameTableFullEventDto>();
         }
     }
 }
