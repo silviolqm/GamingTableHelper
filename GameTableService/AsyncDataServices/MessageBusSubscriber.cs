@@ -28,12 +28,12 @@ namespace GameTableService.AsyncDataServices
             {
                 _connection = await factory.CreateConnectionAsync();
                 _channel = await _connection.CreateChannelAsync();
-                await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchange"]!, type: ExchangeType.Fanout);
+                await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeGameSys"]!, type: ExchangeType.Fanout);
                 QueueDeclareOk queue = await _channel.QueueDeclareAsync();
                 _queueName = queue.QueueName;
                 await _channel.QueueBindAsync(
                     queue: _queueName,
-                    exchange: _configuration["RabbitMQExchange"]!,
+                    exchange: _configuration["RabbitMQExchangeGameSys"]!,
                     routingKey: string.Empty
                 );
 
@@ -55,10 +55,9 @@ namespace GameTableService.AsyncDataServices
 
         protected override async Task<Task> ExecuteAsync(CancellationToken stoppingToken)
         {
-            await SetupMessageBusConnection();
             if (_channel == null)
             {
-                Console.WriteLine("Failed to create a channel in RabbitMQ.");
+                await SetupMessageBusConnection();
             }
 
             stoppingToken.ThrowIfCancellationRequested();
