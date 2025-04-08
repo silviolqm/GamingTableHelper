@@ -1,5 +1,6 @@
 using GameTableService.AsyncDataServices;
 using GameTableService.Data;
+using GameTableService.SyncDataServices;
 using Microsoft.EntityFrameworkCore;
 using Shared.JwtConfiguration;
 
@@ -17,6 +18,8 @@ builder.Services.AddJwtAuthentication();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
 
+builder.Services.AddScoped<IGameSystemDataClient, GameSystemDataClient>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,5 +32,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+SeedGameSystemData.SeedGameSystems(app);
 
 app.Run();

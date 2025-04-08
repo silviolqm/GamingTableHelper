@@ -1,0 +1,18 @@
+syntax = "proto3";
+option csharp_namespace = "GameSystemService";
+
+service GrpcGameSystem {
+    rpc GetAllGameSystems (GetAllRequest) returns (GameSystemResponse);
+}
+
+message GetAllRequest {}
+
+message GrpcGameSystemModel {
+    string id = 1;
+    string name = 2;
+    string publisher = 3;
+}
+
+message GameSystemResponse {
+    repeated GrpcGameSystemModel gamesystems = 1;
+}
