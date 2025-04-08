@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Shared\JwtConfiguration\JwtConfiguration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="SyncDataServices\gamesystems.proto" GrpcServices="Client" />
+  </ItemGroup>
+
 </Project>
