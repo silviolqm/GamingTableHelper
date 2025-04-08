@@ -15,8 +15,8 @@ builder.Services.AddScoped<IGameTableRepo, GameTableRepo>();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("GameTableConnectionString")));
 builder.Services.AddJwtAuthentication();
 
-builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
 builder.Services.AddScoped<IGameSystemDataClient, GameSystemDataClient>();
 

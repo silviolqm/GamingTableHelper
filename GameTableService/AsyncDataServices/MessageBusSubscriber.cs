@@ -18,8 +18,6 @@ namespace GameTableService.AsyncDataServices
         {
             _configuration = configuration;
             _eventProcessor = eventProcessor;
-
-            SetupMessageBusConnection().Wait();
         }
 
         async Task SetupMessageBusConnection()
@@ -44,6 +42,9 @@ namespace GameTableService.AsyncDataServices
             catch (Exception ex)
             {
                 Console.WriteLine($"Connection to Message Bus failed: {ex.Message}");
+                Console.WriteLine("RabbitMQ setup failed.");
+                Console.WriteLine($"Error: {ex.GetType().Name} - {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
             }
         }
 
@@ -54,6 +55,12 @@ namespace GameTableService.AsyncDataServices
 
         protected override async Task<Task> ExecuteAsync(CancellationToken stoppingToken)
         {
+            await SetupMessageBusConnection();
+            if (_channel == null)
+            {
+                Console.WriteLine("Failed to create a channel in RabbitMQ.");
+            }
+
             stoppingToken.ThrowIfCancellationRequested();
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
@@ -73,9 +80,12 @@ namespace GameTableService.AsyncDataServices
 
         public async ValueTask DisposeAsync()
         {
-            if (_channel.IsOpen)
+            if (_channel != null && _channel.IsOpen)
             {
                 await _channel.CloseAsync();
+            }
+            if (_connection != null && _connection.IsOpen)
+            {
                 await _connection.CloseAsync();
             }
         }
