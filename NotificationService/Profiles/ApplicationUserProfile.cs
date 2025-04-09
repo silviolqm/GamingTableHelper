@@ -10,6 +10,7 @@ namespace NotificationService.Profiles
         {
             CreateMap<UserEventDto, ApplicationUser>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<ApplicationUser, ApplicationUserReadDto>();
         }
     }
 }

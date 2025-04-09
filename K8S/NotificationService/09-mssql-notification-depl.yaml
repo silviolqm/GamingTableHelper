@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-notification-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql-notification
+  template:
+    metadata:
+      labels:
+        app: mssql-notification
+    spec:
+      containers:
+        - name: mssql-notification
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          ports:
+            - containerPort: 1433
+          env:
+          - name: MSSQL_PID
+            value: "Express"
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: MSSQL_SA_PASSWORD
+            value: "Password!1" #This password should be stored in a safe place when in a real-world scenario
+          volumeMounts:
+            - mountPath: var/opt/mssql/data
+              name: mssql-notification-db
+      volumes:
+      - name: mssql-notification-db
+        persistentVolumeClaim:
+          claimName: mssql-notification-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-notification-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: mssql-notification
+  ports:
+  - name: mssql-notification
+    protocol: TCP
+    port: 1433
+    targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-notification-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: mssql-notification
+  ports:
+  - protocol: TCP
+    port: 1536
+    targetPort: 1433

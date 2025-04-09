@@ -34,7 +34,7 @@ namespace NotificationService.Data
             return _context.Users.Any(p => p.ExternalId == externalUserId);
         }
 
-        public IEnumerable<ApplicationUser> GetUsers()
+        public IEnumerable<ApplicationUser> GetAllUsers()
         {
             return _context.Users.ToList();
         }

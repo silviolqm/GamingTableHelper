@@ -5,7 +5,7 @@ namespace NotificationService.Data
     public interface INotificationRepo
     {
         bool SaveChanges();
-        IEnumerable<ApplicationUser> GetUsers();
+        IEnumerable<ApplicationUser> GetAllUsers();
         bool UserExists(Guid userId);
         bool ExternalUserExists(Guid externalUserId);
         void CreateUser(ApplicationUser user);
