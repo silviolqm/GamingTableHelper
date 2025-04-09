@@ -39,6 +39,16 @@ namespace NotificationService.Data
             return _context.Users.ToList();
         }
 
+        public string GetEmailByUserId(Guid id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            return user.Email;
+        }
+
         public bool SaveChanges()
         {
             return _context.SaveChanges() >= 0;
