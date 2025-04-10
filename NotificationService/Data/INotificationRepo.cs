@@ -11,6 +11,6 @@ namespace NotificationService.Data
         void CreateUser(ApplicationUser user);
         void DeleteUser(ApplicationUser user);
         void UpdateUser(ApplicationUser user);
-        string GetEmailByUserId(Guid id);
+        ApplicationUser GetByUserId(Guid id);
     }
 }
