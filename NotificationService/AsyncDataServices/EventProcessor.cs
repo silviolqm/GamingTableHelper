@@ -1,7 +1,9 @@
 using System.Text.Json;
+using System.Threading.Tasks;
 using AutoMapper;
 using NotificationService.Data;
 using NotificationService.Dtos;
+using NotificationService.EmailService;
 using NotificationService.Models;
 
 namespace NotificationService.AsyncDataServices
@@ -19,7 +21,7 @@ namespace NotificationService.AsyncDataServices
             _scopeFactory = scopeFactory;
         }
 
-        public void ProcessEvent(string message)
+        public async Task ProcessEvent(string message)
         {
             var eventType = DetermineEvent(message);
             switch (eventType)
@@ -34,7 +36,7 @@ namespace NotificationService.AsyncDataServices
                     UpdateUser(message);
                     break;
                 case EventType.GameTableFull:
-                    SendNotificationTableFull(message);
+                    await SendNotificationTableFull(message);
                     break;
                 default:
                     break;
@@ -136,19 +138,20 @@ namespace NotificationService.AsyncDataServices
             }
         }
 
-        private void SendNotificationTableFull(string message)
+        private async Task SendNotificationTableFull(string message)
         {
             var gameTableFullEventDto = JsonSerializer.Deserialize<GameTableFullEventDto>(message);
             using var scope = _scopeFactory.CreateScope();
             var repo = scope.ServiceProvider.GetRequiredService<INotificationRepo>();
+            var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-            //Mockup of notification by email
             foreach (var playerId in gameTableFullEventDto!.Players)
             {
-                var email = repo.GetEmailByUserId(playerId);
-                Console.WriteLine($"Sending email notification to: {email}");
+                var user = repo.GetByUserId(playerId);
+                var email = emailService.GenerateTableFullEmail(user, gameTableFullEventDto);
+                await emailService.SendEmailAsync(email.to, email.subject, email.body);
             }
-            Console.WriteLine($"All player notified by email that the game table is ready!");
+            Console.WriteLine($"All players notified by email that the game table is ready!");
         }
     }
 
