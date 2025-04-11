@@ -15,6 +15,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IGameSystemRepo, GameSystemRepo>();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("GameSystemConnectionString")));
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
+
 builder.Services.AddGrpc();
 
 var app = builder.Build();
@@ -36,7 +37,5 @@ app.MapGet("SyncDataServices/gamesystems.proto", async context =>
 {
     await context.Response.WriteAsync(File.ReadAllText("SyncDataServices/gamesystems.proto"));
 });
-
-//PrepDb.PrepPopulation(app, app.Environment.IsProduction());
 
 app.Run();

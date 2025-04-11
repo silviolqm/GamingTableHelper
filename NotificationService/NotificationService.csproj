@@ -24,4 +24,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="SyncDataServices\applicationusers.proto" GrpcServices="Client" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,7 @@
 using AuthService.Data;
 using AuthService.Models;
 using AuthService.Services;
+using AuthService.SyncDataServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.JwtConfiguration;
@@ -13,10 +14,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddJwtAuthentication();
 builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnectionString")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddGrpc();
 
 var app = builder.Build();
 
@@ -30,5 +34,12 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+//gRPC
+app.MapGrpcService<GrpcApplicationUserService>();
+app.MapGet("SyncDataServices/applicationusers.proto", async context =>
+{
+    await context.Response.WriteAsync(File.ReadAllText("SyncDataServices/applicationusers.proto"));
+});
 
 app.Run();
