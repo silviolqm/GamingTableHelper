@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NotificationService.AsyncDataServices;
 using NotificationService.Data;
 using NotificationService.EmailService;
+using NotificationService.SyncDataServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
+builder.Services.AddScoped<IApplicationUserDataClient, ApplicationUserDataClient>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,5 +31,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+
+SeedApplicationUserData.SeedUsers(app);
 
 app.Run();

@@ -1,0 +1,18 @@
+syntax = "proto3";
+option csharp_namespace = "AuthService";
+
+service GrpcApplicationUser {
+    rpc GetAllUsers (GetAllRequest) returns (UserResponse);
+}
+
+message GetAllRequest {}
+
+message GrpcUserModel {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+}
+
+message UserResponse {
+    repeated GrpcUserModel users = 1;
+}

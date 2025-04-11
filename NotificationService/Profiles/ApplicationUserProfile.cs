@@ -1,3 +1,4 @@
+using AuthService;
 using AutoMapper;
 using NotificationService.Dtos;
 using NotificationService.Models;
@@ -11,6 +12,8 @@ namespace NotificationService.Profiles
             CreateMap<UserEventDto, ApplicationUser>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
             CreateMap<ApplicationUser, ApplicationUserReadDto>();
+            CreateMap<GrpcUserModel, ApplicationUser>()
+                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }
