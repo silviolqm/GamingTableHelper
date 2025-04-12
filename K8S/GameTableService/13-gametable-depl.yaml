@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gametable-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gametable
+  template:
+    metadata:
+      labels:
+        app: gametable
+    spec:
+      containers:
+        - name: gametable
+          image: gamingtablehelper-gametable:local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gametable-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: gametable
+  ports:
+  - name: gametable
+    protocol: TCP
+    port: 8080
+    targetPort: 8080

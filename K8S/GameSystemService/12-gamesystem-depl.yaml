@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gamesystem-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gamesystem
+  template:
+    metadata:
+      labels:
+        app: gamesystem
+    spec:
+      containers:
+        - name: gamesystem
+          image: gamingtablehelper-gamesystem:local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gamesystem-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: gamesystem
+  ports:
+  - name: gamesystem
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: gamesystemgrpc
+    protocol: TCP
+    port: 1122
+    targetPort: 1122
