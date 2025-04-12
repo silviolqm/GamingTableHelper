@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NotificationService.Data;
@@ -19,6 +20,8 @@ namespace NotificationService.Controllers
             _mapper = mapper;
         }
 
+        //For local testing only - not exposed in the gateway
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<ApplicationUserReadDto>> GetAllApplicationUsers()
         {

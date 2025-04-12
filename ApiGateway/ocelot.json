@@ -1,29 +1,93 @@
 {
     "GlobalConfiguration":{
-        "BaseUrl": "https://localhost:7000"
+        "BaseUrl": "apigateway-clusterip-srv:8080"
     },
     "Routes": [
         {
-            "UpstreamPathTemplate": "/gateway/auth",
-            "UpstreamHttpMethod": "POST",
-            "DownstreamPathTemplate": "/api/auth",
-            "DownstreamScheme": "https",
+            "UpstreamPathTemplate": "/gateway/auth/{everything}",
+            "UpstreamHttpMethod": ["POST"],
+            "DownstreamPathTemplate": "/api/auth/{everything}",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
-                    "Port": 7001
+                    "Host": "auth-clusterip-srv",
+                    "Port": 8080
                 }
-            ]
+            ],
+            "RateLimitOptions":{
+                "EnableRateLimiting": true,
+                "Period": "20s",
+                "Limit": 5,
+                "PeriodTimespan": 30
+            }
         },
         {
-            "UpstreamPathTemplate": "/gateway/exemplo",
-            "UpstreamHttpMethod": "GET",
-            "DownstreamPathTemplate": "/api/exemplo",
-            "DownstreamScheme": "https",
+            "UpstreamPathTemplate": "/gateway/gamesystems/{everything}",
+            "UpstreamHttpMethod": ["GET"],
+            "DownstreamPathTemplate": "/api/gamesystems/{everything}",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
-                    "Port": 7002
+                    "Host": "gamesystem-clusterip-srv",
+                    "Port": 8080
+                }
+            ],
+            "RateLimitOptions":{
+                "EnableRateLimiting": true,
+                "Period": "20s",
+                "Limit": 5,
+                "PeriodTimespan": 30
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/gateway/gamesystems/{everything}",
+            "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+            "DownstreamPathTemplate": "/api/gamesystems/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "gamesystem-clusterip-srv",
+                    "Port": 8080
+                }
+            ],
+            "RateLimitOptions":{
+                "EnableRateLimiting": true,
+                "Period": "20s",
+                "Limit": 5,
+                "PeriodTimespan": 30
+            },
+            "AuthenticationOptions":{
+                "AuthenticationProviderKeys": [ "Bearer" ],
+                "AllowedScopes": []
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/gateway/gametables/{everything}",
+            "UpstreamHttpMethod": ["GET"],
+            "DownstreamPathTemplate": "/api/gametables/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "gametable-clusterip-srv",
+                    "Port": 8080
+                }
+            ],
+            "RateLimitOptions":{
+                "EnableRateLimiting": true,
+                "Period": "20s",
+                "Limit": 5,
+                "PeriodTimespan": 30
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/gateway/gametables/{everything}",
+            "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "PATCH" ],
+            "DownstreamPathTemplate": "/api/gametables/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "gametable-clusterip-srv",
+                    "Port": 8080
                 }
             ],
             "RateLimitOptions":{

@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+WORKDIR /App
+
+COPY ./GameSystemService ./GameSystemService
+COPY ./Shared/JwtConfiguration ./Shared/JwtConfiguration
+COPY ./GamingTableHelper.sln .
+
+RUN dotnet restore GameSystemService/GameSystemService.csproj
+RUN dotnet publish GameSystemService/GameSystemService.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /App
+COPY --from=build-env /App/out .
+ENTRYPOINT ["dotnet", "GameSystemService.dll"]
