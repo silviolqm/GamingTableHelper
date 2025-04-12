@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+WORKDIR /App
+
+COPY ./NotificationService ./NotificationService
+COPY ./Shared/JwtConfiguration ./Shared/JwtConfiguration
+COPY ./GamingTableHelper.sln .
+
+RUN dotnet restore NotificationService/NotificationService.csproj
+RUN dotnet publish NotificationService/NotificationService.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /App
+COPY --from=build-env /App/out .
+ENTRYPOINT ["dotnet", "NotificationService.dll"]

@@ -3,6 +3,7 @@ using GameSystemService.AsyncDataServices;
 using GameSystemService.Data;
 using GameSystemService.Dtos;
 using GameSystemService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameSystemService.Controllers
@@ -39,6 +40,7 @@ namespace GameSystemService.Controllers
             return Ok(gameSystem);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<GameSystemReadDto>> CreateGameSystem(GameSystemCreateDto gameSystemCreateDto)
         {
@@ -61,6 +63,7 @@ namespace GameSystemService.Controllers
             return CreatedAtRoute(nameof(GetGameSystemById), new {Id = gameSystemReadDto.Id}, gameSystemReadDto);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteGameSystem(Guid id)
         {
@@ -84,6 +87,7 @@ namespace GameSystemService.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateGameSystem(Guid id, GameSystemUpdateDto gameSystemUpdateDto)
         {

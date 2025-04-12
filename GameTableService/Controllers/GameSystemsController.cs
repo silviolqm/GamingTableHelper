@@ -18,6 +18,7 @@ namespace GameTableService.Controllers
             _mapper = mapper;
         }
 
+        //Only for local testing - not exposed in the gateway
         [HttpGet]
         public ActionResult<IEnumerable<GameSystemReadDto>> GetGameSystems()
         {

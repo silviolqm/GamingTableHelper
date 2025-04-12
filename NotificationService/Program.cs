@@ -3,6 +3,7 @@ using NotificationService.AsyncDataServices;
 using NotificationService.Data;
 using NotificationService.EmailService;
 using NotificationService.SyncDataServices;
+using Shared.JwtConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<INotificationRepo, NotificationRepo>();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("NotificationConnectionString")));
+builder.Services.AddJwtAuthentication();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
@@ -30,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 SeedApplicationUserData.SeedUsers(app);

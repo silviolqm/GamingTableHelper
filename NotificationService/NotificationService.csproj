@@ -25,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shared\JwtConfiguration\JwtConfiguration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="SyncDataServices\applicationusers.proto" GrpcServices="Client" />
   </ItemGroup>
 
