@@ -1,0 +1,36 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: gamingtablehelper
+build:
+  local:
+    push: false
+  artifacts:
+    - image: gamingtablehelper-authservice
+      context: AuthService
+    - image: gamingtablehelper-gamesystemservice
+      context: GameSystemService
+    - image: gamingtablehelper-gametableservice
+      context: GameTableService
+    - image: gamingtablehelper-notificationservice
+      context: NotificationService
+    - image: gamingtablehelper-apigateway
+      context: ApiGateway
+manifests:
+  rawYaml:
+    - K8S/AuthService/01-local-pvc-auth.yaml
+    - K8S/AuthService/02-mssql-auth-depl.yaml
+    - K8S/03-rabbitmq-depl.yaml
+    - K8S/GameSystemService/04-local-pvc-gamesys.yaml
+    - K8S/GameSystemService/05-mssql-gamesys-depl.yaml
+    - K8S/GameTableService/06-local-pvc-gametable.yaml
+    - K8S/GameTableService/07-mssql-gametable-depl.yaml
+    - K8S/NotificationService/08-local-pvc-notification.yaml
+    - K8S/NotificationService/09-mssql-notification-depl.yaml
+    - K8S/ApiGateway/10-apigateway-depl.yaml
+    - K8S/AuthService/11-auth-depl.yaml
+    - K8S/GameSystemService/12-gamesystem-depl.yaml
+    - K8S/GameTableService/13-gametable-depl.yaml
+    - K8S/NotificationService/14-notification-depl.yaml
+    - K8S/Ingress/15-ingress-nginx.yaml
+    - K8S/Ingress/16-ingress-srv.yaml
