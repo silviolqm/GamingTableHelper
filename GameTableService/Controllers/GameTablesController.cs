@@ -141,6 +141,15 @@ namespace GameTableService.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateGameTable(Guid id, GameTableUpdateDto gameTableUpdateDto)
         {
+            if (!_repo.GameSystemExists(gameTableUpdateDto.GameSystemId))
+            {
+                return Problem(
+                    type: "Bad Request",
+                    title: "Invalid Game System",
+                    detail: "The Game System provided doesn't exist.",
+                    statusCode: StatusCodes.Status400BadRequest);
+            }
+
             var existingGameTable = _repo.GetGameTableById(id);
             if (existingGameTable == null)
             {
@@ -185,7 +194,7 @@ namespace GameTableService.Controllers
             {
                 return NotFound();
             }
-
+            //Game Table at full capacity
             if (gameTable.Players.Count() >= gameTable.MaxPlayers)
             {
                 return Problem(
@@ -195,6 +204,7 @@ namespace GameTableService.Controllers
                     statusCode: StatusCodes.Status409Conflict);
             }
 
+            //Get user Id from JWT token
             var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
