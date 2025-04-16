@@ -45,8 +45,4 @@ manifests:
     - K8S/Ingress/15-ingress-nginx.yaml
     - K8S/Ingress/16-ingress-srv.yaml
 deploy:
-  kubectl:
-    flags:
-      apply:
-        - --wait=true
-  statusCheckDeadlineSeconds: 120
+  kubectl: {}
