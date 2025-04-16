@@ -21,6 +21,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddGrpc();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -30,7 +31,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -42,4 +42,7 @@ app.MapGet("SyncDataServices/applicationusers.proto", async context =>
     await context.Response.WriteAsync(File.ReadAllText("SyncDataServices/applicationusers.proto"));
 });
 
+PrepDatabase.DoMigrations(app, app.Environment.IsProduction());
+
+app.MapHealthChecks("/health");
 app.Run();

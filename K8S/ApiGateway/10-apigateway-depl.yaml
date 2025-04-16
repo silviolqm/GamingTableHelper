@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: apigateway
-          image: gamingtablehelper-apigateway:local
+          image: gamingtablehelper-apigateway
 ---
 apiVersion: v1
 kind: Service

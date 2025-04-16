@@ -22,6 +22,7 @@ builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
 builder.Services.AddScoped<IApplicationUserDataClient, ApplicationUserDataClient>();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -31,11 +32,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-SeedApplicationUserData.SeedUsers(app);
+PrepDatabase.DoMigrations(app, app.Environment.IsProduction());
+PrepDatabase.SeedUsers(app);
 
+app.MapHealthChecks("/health");
 app.Run();

@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Conf
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 
 builder.Services.AddGrpc();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -26,7 +27,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -38,4 +38,7 @@ app.MapGet("SyncDataServices/gamesystems.proto", async context =>
     await context.Response.WriteAsync(File.ReadAllText("SyncDataServices/gamesystems.proto"));
 });
 
+PrepDatabase.DoMigrations(app, app.Environment.IsProduction());
+
+app.MapHealthChecks("/health");
 app.Run();
