@@ -20,6 +20,30 @@ namespace GameTableService.AsyncDataServices
             _eventProcessor = eventProcessor;
         }
 
+        protected override async Task<Task> ExecuteAsync(CancellationToken stoppingToken)
+        {
+            if (_channel == null)
+            {
+                await SetupMessageBusConnection();
+            }
+
+            stoppingToken.ThrowIfCancellationRequested();
+
+            var consumer = new AsyncEventingBasicConsumer(_channel);
+
+            consumer.ReceivedAsync += async (sender, ea) =>
+            {
+                var body = ea.Body;
+                var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
+
+                _eventProcessor.ProcessEvent(notificationMessage);
+            };
+            
+            await _channel.BasicConsumeAsync(queue: _queueName, autoAck: false, consumer: consumer);
+
+            return Task.CompletedTask;
+        }
+
         async Task SetupMessageBusConnection()
         {
             var factory = new ConnectionFactory() {HostName = _configuration["RabbitMQHost"]!, 
@@ -51,30 +75,6 @@ namespace GameTableService.AsyncDataServices
         private async Task MessageBus_ConnectionShutdown(object sender, ShutdownEventArgs @event)
         {
             Console.WriteLine($"Connection to Message Bus was shut down.");
-        }
-
-        protected override async Task<Task> ExecuteAsync(CancellationToken stoppingToken)
-        {
-            if (_channel == null)
-            {
-                await SetupMessageBusConnection();
-            }
-
-            stoppingToken.ThrowIfCancellationRequested();
-
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-
-            consumer.ReceivedAsync += async (sender, ea) =>
-            {
-                var body = ea.Body;
-                var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
-
-                _eventProcessor.ProcessEvent(notificationMessage);
-            };
-            
-            await _channel.BasicConsumeAsync(queue: _queueName, autoAck: false, consumer: consumer);
-
-            return Task.CompletedTask;
         }
 
         public async ValueTask DisposeAsync()
