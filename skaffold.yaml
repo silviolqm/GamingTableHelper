@@ -6,16 +6,26 @@ build:
   local:
     push: false
   artifacts:
-    - image: gamingtablehelper-authservice
-      context: AuthService
-    - image: gamingtablehelper-gamesystemservice
-      context: GameSystemService
-    - image: gamingtablehelper-gametableservice
-      context: GameTableService
-    - image: gamingtablehelper-notificationservice
-      context: NotificationService
+    - image: gamingtablehelper-auth
+      context: .
+      docker:
+        dockerfile: AuthService/Dockerfile
+    - image: gamingtablehelper-gamesystem
+      context: .
+      docker:
+        dockerfile: GameSystemService/Dockerfile
+    - image: gamingtablehelper-gametable
+      context: .
+      docker:
+        dockerfile: GameTableService/Dockerfile
+    - image: gamingtablehelper-notification
+      context: .
+      docker:
+        dockerfile: NotificationService/Dockerfile
     - image: gamingtablehelper-apigateway
-      context: ApiGateway
+      context: .
+      docker:
+        dockerfile: ApiGateway/Dockerfile
 manifests:
   rawYaml:
     - K8S/AuthService/01-local-pvc-auth.yaml
@@ -34,3 +44,9 @@ manifests:
     - K8S/NotificationService/14-notification-depl.yaml
     - K8S/Ingress/15-ingress-nginx.yaml
     - K8S/Ingress/16-ingress-srv.yaml
+deploy:
+  kubectl:
+    flags:
+      apply:
+        - --wait=true
+  statusCheckDeadlineSeconds: 120

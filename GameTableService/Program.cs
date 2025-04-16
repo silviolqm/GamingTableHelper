@@ -20,6 +20,7 @@ builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddSingleton<IMessageBusPublisher, MessageBusPublisher>();
 
 builder.Services.AddScoped<IGameSystemDataClient, GameSystemDataClient>();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -29,11 +30,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-SeedGameSystemData.SeedGameSystems(app);
+PrepDatabase.DoMigrations(app, app.Environment.IsProduction());
+PrepDatabase.SeedGameSystems(app);
 
+app.MapHealthChecks("/health");
 app.Run();
