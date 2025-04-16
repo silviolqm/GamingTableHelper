@@ -1,5 +1,6 @@
 using AutoMapper;
 using AuthService.Models;
+using AuthService.Dtos;
 
 namespace AuthService.Profiles
 {
@@ -8,6 +9,7 @@ namespace AuthService.Profiles
         public ApplicationUserProfile()
         {
             CreateMap<ApplicationUser, GrpcUserModel>();
+            CreateMap<ApplicationUser, UserEventDto>();
         }
     }
 }

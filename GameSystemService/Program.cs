@@ -14,8 +14,9 @@ builder.Services.AddJwtAuthentication();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IGameSystemRepo, GameSystemRepo>();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("GameSystemConnectionString")));
+//Message Bus
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
-
+//gRPC
 builder.Services.AddGrpc();
 builder.Services.AddHealthChecks();
 

@@ -110,6 +110,7 @@ namespace GameTableService.Controllers
                 return NotFound();
             }
 
+            //Get user Id from JWT token
             var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
@@ -121,6 +122,7 @@ namespace GameTableService.Controllers
             }
             var userId = Guid.Parse(appUserIdClaim.Value);
 
+            // Check if the user owns the GameTable before deletion
             if (gameTableInRepo.OwnerUserId == userId)
             {
                 _repo.DeleteGameTable(gameTableInRepo);
@@ -141,6 +143,7 @@ namespace GameTableService.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateGameTable(Guid id, GameTableUpdateDto gameTableUpdateDto)
         {
+            //Validate GameSystem
             if (!_repo.GameSystemExists(gameTableUpdateDto.GameSystemId))
             {
                 return Problem(
@@ -156,6 +159,7 @@ namespace GameTableService.Controllers
                 return NotFound();
             }
 
+            // Get userId from the JWT token
             var appUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (appUserIdClaim == null)
             {
@@ -167,6 +171,7 @@ namespace GameTableService.Controllers
             }
             var userId = Guid.Parse(appUserIdClaim.Value);
 
+            // Check if the user owns the GameTable before updating
             if (existingGameTable.OwnerUserId == userId)
             {
                 _mapper.Map(gameTableUpdateDto, existingGameTable);
@@ -220,6 +225,7 @@ namespace GameTableService.Controllers
             {
                 if (gameTable.Players.Count() == gameTable.MaxPlayers)
                 {
+                    // Send a message to the MessageBus to notify other services that the game table is full
                     try
                     {
                         var gameTableFullEventDto = _mapper.Map<GameTableFullEventDto>(gameTable);

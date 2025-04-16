@@ -1,10 +1,10 @@
 using System.Text;
 using System.Text.Json;
-using GameSystemService.Dtos;
+using AuthService.Dtos;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace GameSystemService.AsyncDataServices
+namespace AuthService.AsyncDataServices
 {
     public class MessageBusClient : IMessageBusClient, IAsyncDisposable
     {
@@ -17,14 +17,14 @@ namespace GameSystemService.AsyncDataServices
             _configuration = configuration;
         }
 
-        public async Task PublishGameSystemEvent(GameSystemEventDto gameSystemEventDto)
+        public async Task PublishUserEvent(UserEventDto userEventDto)
         {
             if (_channel == null)
             {
                 await SetupMessageBusConnection();
             }
 
-            var message = JsonSerializer.Serialize(gameSystemEventDto);
+            var message = JsonSerializer.Serialize(userEventDto);
             if (_connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
@@ -44,7 +44,7 @@ namespace GameSystemService.AsyncDataServices
             {
                 _connection = await factory.CreateConnectionAsync();
                 _channel = await _connection.CreateChannelAsync();
-                await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeGameSys"]!, type: ExchangeType.Fanout);
+                await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeAppUser"]!, type: ExchangeType.Fanout);
 
                 _connection.ConnectionShutdownAsync += RabbitMQ_ConnectionShutdown;
 
@@ -60,7 +60,7 @@ namespace GameSystemService.AsyncDataServices
         {
             byte[] messageBody = Encoding.UTF8.GetBytes(message);
             await _channel.BasicPublishAsync(
-                exchange: _configuration["RabbitMQExchangeGameSys"]!,
+                exchange: _configuration["RabbitMQExchangeAppUser"]!,
                 routingKey: string.Empty,
                 body: messageBody);
             Console.WriteLine($"Message Sent: {message}");

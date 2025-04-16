@@ -48,11 +48,14 @@ namespace GameSystemService.Controllers
             _repo.CreateGameSystem(gameSystemToCreate);
             _repo.SaveChanges();
 
+            // Send a message to the MessageBus
+            // to notify other services about the new GameSystem creation
             try
             {
                 var gameSystemEventDto = _mapper.Map<GameSystemEventDto>(gameSystemToCreate);
                 gameSystemEventDto.Event = "GameSystem_Created";
                 await _messageBusClient.PublishGameSystemEvent(gameSystemEventDto);
+                Console.WriteLine($"Sent GameSystem_Created message to MessageBus.");
             }
             catch (Exception ex)
             {
@@ -74,11 +77,14 @@ namespace GameSystemService.Controllers
             _repo.DeleteGameSystem(gameSystemInRepo);
             _repo.SaveChanges();
 
+            // Send a message to the MessageBus
+            // to notify other services about the GameSystem deletion
             try
             {
                 var gameSystemEventDto = _mapper.Map<GameSystemEventDto>(gameSystemInRepo);
                 gameSystemEventDto.Event = "GameSystem_Deleted";
                 await _messageBusClient.PublishGameSystemEvent(gameSystemEventDto);
+                Console.WriteLine($"Sent GameSystem_Deleted message to MessageBus.");
             }
             catch (Exception ex)
             {
@@ -101,11 +107,14 @@ namespace GameSystemService.Controllers
             _repo.EditGameSystem(existingGameSystem);
             _repo.SaveChanges();
 
+            // Send a message to the MessageBus
+            // to notify other services about the updated GameSystem resource
             try
             {
                 var gameSystemEventDto = _mapper.Map<GameSystemEventDto>(existingGameSystem);
                 gameSystemEventDto.Event = "GameSystem_Updated";
                 await _messageBusClient.PublishGameSystemEvent(gameSystemEventDto);
+                Console.WriteLine($"Sent GameSystem_Updated message to MessageBus.");
             }
             catch (Exception ex)
             {

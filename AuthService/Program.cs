@@ -1,3 +1,4 @@
+using AuthService.AsyncDataServices;
 using AuthService.Data;
 using AuthService.Models;
 using AuthService.Services;
@@ -20,7 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Conf
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
+//Message Bus
+builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
+//gRPC
 builder.Services.AddGrpc();
+
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
