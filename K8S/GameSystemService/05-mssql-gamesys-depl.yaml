@@ -27,12 +27,6 @@ spec:
           volumeMounts:
             - mountPath: var/opt/mssql/data
               name: mssql-gamesys-db
-          readinessProbe:
-            tcpSocket:
-              port: 1433
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            failureThreshold: 6
       volumes:
       - name: mssql-gamesys-db
         persistentVolumeClaim:
