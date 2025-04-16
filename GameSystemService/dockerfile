@@ -11,5 +11,8 @@ RUN dotnet publish GameSystemService/GameSystemService.csproj -c Release -o out
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /App
+
+LABEL project="gamingtablehelper"
+
 COPY --from=build-env /App/out .
 ENTRYPOINT ["dotnet", "GameSystemService.dll"]
