@@ -11,5 +11,8 @@ RUN dotnet publish NotificationService/NotificationService.csproj -c Release -o 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /App
+
+LABEL project="gamingtablehelper"
+
 COPY --from=build-env /App/out .
 ENTRYPOINT ["dotnet", "NotificationService.dll"]
