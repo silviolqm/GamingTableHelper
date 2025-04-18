@@ -10,13 +10,23 @@ using Shared.JwtConfiguration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddJwtAuthentication();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+//Swagger
+builder.Services.AddSwaggerGen( o =>
+    {
+        o.SwaggerDoc("v1", new() 
+        {
+            Title = "AuthService",
+            Version = "v1",
+            Description = "Authentication Service API for the GamingTableHelper application"
+        });
+    }
+);
+//Database
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnectionString")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
@@ -35,6 +45,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthService v1"));
 
 app.UseAuthentication();
 app.UseAuthorization();
