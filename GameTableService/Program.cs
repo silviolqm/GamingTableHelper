@@ -14,6 +14,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IGameTableRepo, GameTableRepo>();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("GameTableConnectionString")));
 builder.Services.AddJwtAuthentication();
+//Swagger
+builder.Services.AddSwaggerGenWithJWT(
+    serviceName: "GameTableService",
+    description: "Game Table Service API for the GamingTableHelper application"
+);
 
 builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
@@ -29,6 +34,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GameTableService v1"));
 
 app.UseAuthentication();
 app.UseAuthorization();
