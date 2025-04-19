@@ -10,9 +10,9 @@ namespace GameTableService.AsyncDataServices
     {
         private readonly IConfiguration _configuration;
         private readonly IEventProcessor _eventProcessor;
-        private IConnection _connection;
-        private IChannel _channel;
-        private string _queueName;
+        private IConnection? _connection;
+        private IChannel? _channel;
+        private string _queueName = string.Empty;
 
         public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
         {
@@ -29,6 +29,11 @@ namespace GameTableService.AsyncDataServices
 
             stoppingToken.ThrowIfCancellationRequested();
 
+            if (_channel == null)
+            {
+                throw new InvalidOperationException("SetupMessageBusConnection failed. Channel is not initialized.");
+            }
+
             var consumer = new AsyncEventingBasicConsumer(_channel);
 
             consumer.ReceivedAsync += async (sender, ea) =>
@@ -36,7 +41,7 @@ namespace GameTableService.AsyncDataServices
                 var body = ea.Body;
                 var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                _eventProcessor.ProcessEvent(notificationMessage);
+                await Task.Run(() => _eventProcessor.ProcessEvent(notificationMessage));
             };
             
             await _channel.BasicConsumeAsync(queue: _queueName, autoAck: false, consumer: consumer);
@@ -60,8 +65,6 @@ namespace GameTableService.AsyncDataServices
                     exchange: _configuration["RabbitMQExchangeGameSys"]!,
                     routingKey: string.Empty
                 );
-
-                _connection.ConnectionShutdownAsync += MessageBus_ConnectionShutdown;
             }
             catch (Exception ex)
             {
@@ -70,11 +73,6 @@ namespace GameTableService.AsyncDataServices
                 Console.WriteLine($"Error: {ex.GetType().Name} - {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
             }
-        }
-
-        private async Task MessageBus_ConnectionShutdown(object sender, ShutdownEventArgs @event)
-        {
-            Console.WriteLine($"Connection to Message Bus was shut down.");
         }
 
         public async ValueTask DisposeAsync()

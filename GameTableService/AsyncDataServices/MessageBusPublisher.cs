@@ -9,8 +9,8 @@ namespace GameTableService.AsyncDataServices
     public class MessageBusPublisher : IMessageBusPublisher
     {
         private readonly IConfiguration _configuration;
-        private IConnection _connection;
-        private IChannel _channel;
+        private IConnection? _connection;
+        private IChannel? _channel;
 
         public MessageBusPublisher(IConfiguration configuration)
         {
@@ -25,7 +25,7 @@ namespace GameTableService.AsyncDataServices
             }
 
             var message = JsonSerializer.Serialize(gameTableFullEventDto);
-            if (_connection.IsOpen)
+            if (_connection != null && _channel != null && _connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
                 await SendMessage(message);
@@ -46,8 +46,6 @@ namespace GameTableService.AsyncDataServices
                 _channel = await _connection.CreateChannelAsync();
                 await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeGameTable"]!, type: ExchangeType.Fanout);
 
-                _connection.ConnectionShutdownAsync += RabbitMQ_ConnectionShutdown;
-
                 Console.WriteLine($"Connected to MessageBus");
             }
             catch (Exception ex)
@@ -59,16 +57,11 @@ namespace GameTableService.AsyncDataServices
         private async Task SendMessage(string message)
         {
             byte[] messageBody = Encoding.UTF8.GetBytes(message);
-            await _channel.BasicPublishAsync(
+            await _channel!.BasicPublishAsync(
                 exchange: _configuration["RabbitMQExchangeGameTable"]!,
                 routingKey: string.Empty,
                 body: messageBody);
             Console.WriteLine($"Message Sent: {message}");
-        }
-
-        private async Task RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs @event)
-        {
-            Console.WriteLine($"Connection to MessageBus shut down.");
         }
 
         public async ValueTask DisposeAsync()

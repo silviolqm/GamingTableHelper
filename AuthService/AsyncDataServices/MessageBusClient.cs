@@ -25,7 +25,7 @@ namespace AuthService.AsyncDataServices
             }
 
             var message = JsonSerializer.Serialize(userEventDto);
-            if (_connection != null && _connection.IsOpen)
+            if (_connection != null && _channel != null && _connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
                 await SendMessage(message);
@@ -58,12 +58,7 @@ namespace AuthService.AsyncDataServices
         private async Task SendMessage(string message)
         {
             byte[] messageBody = Encoding.UTF8.GetBytes(message);
-            if (_channel == null)
-            {
-                Console.WriteLine("MessageBus channel connection failed.");
-                return;
-            }
-            await _channel.BasicPublishAsync(
+            await _channel!.BasicPublishAsync(
                 exchange: _configuration["RabbitMQExchangeAppUser"]!,
                 routingKey: string.Empty,
                 body: messageBody);

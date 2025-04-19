@@ -16,7 +16,7 @@ namespace GameTableService.SyncDataServices
             _configuration = configuration;
         }
 
-        public IEnumerable<GameSystem> ReturnAllGameSystems()
+        public IEnumerable<GameSystem>? ReturnAllGameSystems()
         {
             var channel = GrpcChannel.ForAddress(_configuration["GrpcGameSysService"]!);
             var client = new GrpcGameSystem.GrpcGameSystemClient(channel);
