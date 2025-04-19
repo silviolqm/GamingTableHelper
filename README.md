@@ -13,9 +13,9 @@ Developed by **Sílvio Medeiros** and **Paulo Medeiros** as a portfolio project.
 - [Architecture Overview](#architecture-overview)
 	- [Microservices](#microservices)
 - [Running the Application](#running-the-application)
-	  - [Running with Skaffold](#running-with-skaffold-easy-setup)
-	  - [Clean-up](#clean-up)
-	  - [Testing the Endpoints](#testing-the-endpoints)
+	- [Running with Skaffold](#running-with-skaffold-easy-setup)
+	- [Clean-up](#clean-up)
+	- [Testing the Endpoints](#testing-the-endpoints)
 - [Potential Extensions](#potential-extensions)
 - [Disclaimers](#disclaimers)
 
@@ -45,7 +45,7 @@ Developed by **Sílvio Medeiros** and **Paulo Medeiros** as a portfolio project.
 
 The application follows a microservices architecture. Each service is deployed independently and communicates through RabbitMQ and gRPC (on service startup) to ensure database consistency. An API Gateway handles incoming requests and routes them to the correct service. Notification Service listens for events (like a game table reaching capacity) and sends a notification to users.
 
-### Microservices:
+### **Microservices**:
 
 - **Auth Service**: Handles user authentication and issues JWTs. Sends messages when new users are created.
 - **GameSystem Service**: CRUD operations for game systems. Sends messages to notify other services of resource creation/changes.
@@ -53,8 +53,6 @@ The application follows a microservices architecture. Each service is deployed i
 - **Notification Service**: Handles notification to players. Consumes messages to notify players when a game table is ready. Also consumes messages to update the Emails from Users.
 - **Ingress and Api Gateway**: Acts as a single entry point for external requests, routing them to the appropriate services.
 
-### Endpoints:
-#todo
 
 # Running the application
 
@@ -86,16 +84,31 @@ This project is designed to run on a local Kubernetes cluster using **Skaffold**
 
 	`docker system prune`
 
-### Testing the Endpoints:
-#todo ingress
+# Testing the Endpoints
 
-To make testing and exploring the API easier, we’ve included a **Postman collection** in the `/PostmanCollection` folder.
+You can interact with the API endpoints through Swagger UI, which is available once the application is running. There are two ways to access the Swagger UI:
 
-1. Open Postman.
-2. Go to **File → Import**.
-3. Choose the file `GamingTableHelper.postman_collection.json` located in the `PostmanCollection` folder.
-4. Make sure the app is running by following the steps in [Running the Application](#running-the-application).
-5. Send requests to test user registration, authentication, game system creation, table joining, and more.
+### Using Ingress (Requires editing hosts file)
+
+When using the Ingress controller, you can access the API Gateway and Swagger UI through a friendly local domain. To enable this:
+1. Edit your system's `hosts` file to map the domain `gamingtablehelper.local` to that IP:
+	- On **Windows**, open Notepad as Administrator and edit:
+		`C:\Windows\System32\drivers\etc\hosts`
+	- On **Linux/macOS**, edit `/etc/hosts` with sudo:
+		`sudo nano /etc/hosts`
+2. Then add the following line to the end of the file:
+	`127.0.0.1 gamingtablehelper.local`
+3. Finally, save the file, open your browser and access the Swagger UI on the following address:
+	`http://gamingtablehelper.local/swagger/index.html`
+
+### Using the API Gateway Load Balancer
+
+To make it simpler to test the application we added a load balancer directly to the API Gateway. You can access it without editing any files on your computer. You can find the Swagger UI in the following address:
+	`http://localhost:10555/swagger/index.html`
+
+
+Once you access the Swagger UI, you can navigate between the Endpoints for each microservice by using the dropdown menu in the upper-right corner.
+![System Architecture](swagger.png)
 
 # Next Steps
 
