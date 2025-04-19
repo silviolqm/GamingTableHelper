@@ -4,6 +4,6 @@ namespace GameTableService.SyncDataServices
 {
     public interface IGameSystemDataClient
     {
-        IEnumerable<GameSystem> ReturnAllGameSystems();
+        IEnumerable<GameSystem>? ReturnAllGameSystems();
     }
 }

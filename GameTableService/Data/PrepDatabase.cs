@@ -35,6 +35,11 @@ namespace GameTableService.Data
                 else
                 {
                     var gameSystems = grpcClient.ReturnAllGameSystems();
+                    if (gameSystems == null)
+                    {
+                        Console.WriteLine($"No GameSystems found in gRPC connection to GameSystemService.");
+                        return;
+                    }
                     foreach (var gameSystem in gameSystems)
                     {
                         if (!repo.ExternalGameSystemExists(gameSystem.ExternalId))

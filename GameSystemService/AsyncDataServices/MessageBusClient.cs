@@ -9,8 +9,8 @@ namespace GameSystemService.AsyncDataServices
     public class MessageBusClient : IMessageBusClient, IAsyncDisposable
     {
         private readonly IConfiguration _configuration;
-        private IConnection _connection;
-        private IChannel _channel;
+        private IConnection? _connection;
+        private IChannel? _channel;
 
         public MessageBusClient(IConfiguration configuration)
         {
@@ -25,7 +25,7 @@ namespace GameSystemService.AsyncDataServices
             }
 
             var message = JsonSerializer.Serialize(gameSystemEventDto);
-            if (_connection.IsOpen)
+            if (_connection != null && _channel != null && _connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
                 await SendMessage(message);
@@ -46,8 +46,6 @@ namespace GameSystemService.AsyncDataServices
                 _channel = await _connection.CreateChannelAsync();
                 await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeGameSys"]!, type: ExchangeType.Fanout);
 
-                _connection.ConnectionShutdownAsync += RabbitMQ_ConnectionShutdown;
-
                 Console.WriteLine($"Connected to MessageBus");
             }
             catch (Exception ex)
@@ -59,16 +57,11 @@ namespace GameSystemService.AsyncDataServices
         private async Task SendMessage(string message)
         {
             byte[] messageBody = Encoding.UTF8.GetBytes(message);
-            await _channel.BasicPublishAsync(
+            await _channel!.BasicPublishAsync(
                 exchange: _configuration["RabbitMQExchangeGameSys"]!,
                 routingKey: string.Empty,
                 body: messageBody);
             Console.WriteLine($"Message Sent: {message}");
-        }
-
-        private async Task RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs @event)
-        {
-            Console.WriteLine($"Connection to MessageBus shut down.");
         }
 
         public async ValueTask DisposeAsync()
