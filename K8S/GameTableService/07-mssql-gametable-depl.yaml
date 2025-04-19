@@ -45,3 +45,16 @@ spec:
     protocol: TCP
     port: 1433
     targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-gametable-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: mssql-gametable
+  ports:
+  - protocol: TCP
+    port: 1535
+    targetPort: 1433

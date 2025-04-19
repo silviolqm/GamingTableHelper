@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameTableService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250403232057_update-gametable-starttime-name")]
-    partial class updategametablestarttimename
+    [Migration("20250419180758_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
