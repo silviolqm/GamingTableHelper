@@ -1,6 +1,6 @@
 {
-    "GlobalConfiguration":{
-        "BaseUrl": "apigateway-clusterip-srv:8080"
+    "GlobalConfiguration": {
+        "BaseUrl": "http://apigateway-clusterip-srv:8080"
     },
     "Routes": [
         {
@@ -14,7 +14,8 @@
                     "Port": 8080
                 }
             ],
-            "RateLimitOptions":{
+            "SwaggerKey": "auth",
+            "RateLimitOptions": {
                 "EnableRateLimiting": true,
                 "Period": "20s",
                 "Limit": 5,
@@ -23,7 +24,7 @@
         },
         {
             "UpstreamPathTemplate": "/gateway/gamesystems/{everything}",
-            "UpstreamHttpMethod": ["GET"],
+            "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
             "DownstreamPathTemplate": "/api/gamesystems/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
@@ -32,38 +33,11 @@
                     "Port": 8080
                 }
             ],
-            "RateLimitOptions":{
-                "EnableRateLimiting": true,
-                "Period": "20s",
-                "Limit": 5,
-                "PeriodTimespan": 30
-            }
-        },
-        {
-            "UpstreamPathTemplate": "/gateway/gamesystems/{everything}",
-            "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
-            "DownstreamPathTemplate": "/api/gamesystems/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "gamesystem-clusterip-srv",
-                    "Port": 8080
-                }
-            ],
-            "RateLimitOptions":{
-                "EnableRateLimiting": true,
-                "Period": "20s",
-                "Limit": 5,
-                "PeriodTimespan": 30
-            },
-            "AuthenticationOptions":{
-                "AuthenticationProviderKeys": [ "Bearer" ],
-                "AllowedScopes": []
-            }
+            "SwaggerKey": "gamesystems"
         },
         {
             "UpstreamPathTemplate": "/gateway/gametables/{everything}",
-            "UpstreamHttpMethod": ["GET"],
+            "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE", "PATCH"],
             "DownstreamPathTemplate": "/api/gametables/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
@@ -72,34 +46,39 @@
                     "Port": 8080
                 }
             ],
-            "RateLimitOptions":{
-                "EnableRateLimiting": true,
-                "Period": "20s",
-                "Limit": 5,
-                "PeriodTimespan": 30
-            }
+            "SwaggerKey": "gametables"
+        }
+    ],
+    "SwaggerEndPoints": [
+        {
+            "Key": "auth",
+            "Config": [
+                {
+                    "Name": "Auth Service",
+                    "Version": "v1",
+                    "Url": "http://auth-clusterip-srv:8080/swagger/v1/swagger.json"
+                }
+            ]
         },
         {
-            "UpstreamPathTemplate": "/gateway/gametables/{everything}",
-            "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "PATCH" ],
-            "DownstreamPathTemplate": "/api/gametables/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
+            "Key": "gamesystems",
+            "Config": [
                 {
-                    "Host": "gametable-clusterip-srv",
-                    "Port": 8080
+                    "Name": "Game Systems Service",
+                    "Version": "v1",
+                    "Url": "http://gamesystem-clusterip-srv:8080/swagger/v1/swagger.json"
                 }
-            ],
-            "RateLimitOptions":{
-                "EnableRateLimiting": true,
-                "Period": "20s",
-                "Limit": 5,
-                "PeriodTimespan": 30
-            },
-            "AuthenticationOptions":{
-                "AuthenticationProviderKeys": [ "Bearer" ],
-                "AllowedScopes": []
-            }
+            ]
+        },
+        {
+            "Key": "gametables",
+            "Config": [
+                {
+                    "Name": "Game Tables Service",
+                    "Version": "v1",
+                    "Url": "http://gametable-clusterip-srv:8080/swagger/v1/swagger.json"
+                }
+            ]
         }
     ]
 }
