@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GameTableService.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,7 @@ namespace GameTableService.Migrations
                     MinPlayers = table.Column<int>(type: "int", nullable: false),
                     MaxPlayers = table.Column<int>(type: "int", nullable: false),
                     Players = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    startDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    StartDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {

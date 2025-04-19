@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GameSystemService.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "gameSystems",
+                name: "GameSystems",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -21,7 +21,7 @@ namespace GameSystemService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_gameSystems", x => x.Id);
+                    table.PrimaryKey("PK_GameSystems", x => x.Id);
                 });
         }
 
@@ -29,7 +29,7 @@ namespace GameSystemService.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "gameSystems");
+                name: "GameSystems");
         }
     }
 }
