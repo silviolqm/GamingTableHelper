@@ -9,8 +9,8 @@ namespace AuthService.AsyncDataServices
     public class MessageBusClient : IMessageBusClient, IAsyncDisposable
     {
         private readonly IConfiguration _configuration;
-        private IConnection _connection;
-        private IChannel _channel;
+        private IConnection? _connection;
+        private IChannel? _channel;
 
         public MessageBusClient(IConfiguration configuration)
         {
@@ -25,14 +25,15 @@ namespace AuthService.AsyncDataServices
             }
 
             var message = JsonSerializer.Serialize(userEventDto);
-            if (_connection.IsOpen)
+            if (_connection != null && _connection.IsOpen)
             {
                 Console.WriteLine($"Sending message through MessageBus...");
                 await SendMessage(message);
             }
             else
             {
-                Console.WriteLine($"Failed to send message. Connection to MessageBus closed.");
+                Console.WriteLine($"Failed to send message to MessageBus.");
+                return;
             }
         }
 
@@ -46,8 +47,6 @@ namespace AuthService.AsyncDataServices
                 _channel = await _connection.CreateChannelAsync();
                 await _channel.ExchangeDeclareAsync(exchange: _configuration["RabbitMQExchangeAppUser"]!, type: ExchangeType.Fanout);
 
-                _connection.ConnectionShutdownAsync += RabbitMQ_ConnectionShutdown;
-
                 Console.WriteLine($"Connected to MessageBus");
             }
             catch (Exception ex)
@@ -59,16 +58,16 @@ namespace AuthService.AsyncDataServices
         private async Task SendMessage(string message)
         {
             byte[] messageBody = Encoding.UTF8.GetBytes(message);
+            if (_channel == null)
+            {
+                Console.WriteLine("MessageBus channel connection failed.");
+                return;
+            }
             await _channel.BasicPublishAsync(
                 exchange: _configuration["RabbitMQExchangeAppUser"]!,
                 routingKey: string.Empty,
                 body: messageBody);
             Console.WriteLine($"Message Sent: {message}");
-        }
-
-        private async Task RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs @event)
-        {
-            Console.WriteLine($"Connection to MessageBus shut down.");
         }
 
         public async ValueTask DisposeAsync()

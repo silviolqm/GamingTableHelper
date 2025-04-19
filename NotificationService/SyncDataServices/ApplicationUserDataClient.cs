@@ -16,7 +16,7 @@ namespace NotificationService.SyncDataServices
             _configuration = configuration;
         }
 
-        public IEnumerable<ApplicationUser> ReturnAllUsers()
+        public IEnumerable<ApplicationUser>? ReturnAllUsers()
         {
             var channel = GrpcChannel.ForAddress(_configuration["GrpcAppUsersService"]!);
             var client = new GrpcApplicationUser.GrpcApplicationUserClient(channel);

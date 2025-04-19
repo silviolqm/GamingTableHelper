@@ -35,6 +35,11 @@ namespace NotificationService.Data
                 else
                 {
                     var users = grpcClient.ReturnAllUsers();
+                    if (users == null)
+                    {
+                        Console.WriteLine($"No users found in gRPC connection to AuthService.");
+                        return;
+                    }
                     foreach (var user in users)
                     {
                         if (!repo.ExternalUserExists(user.ExternalId))

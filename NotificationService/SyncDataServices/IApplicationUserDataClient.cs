@@ -4,6 +4,6 @@ namespace NotificationService.SyncDataServices
 {
     public interface IApplicationUserDataClient
     {
-        IEnumerable<ApplicationUser> ReturnAllUsers();
+        IEnumerable<ApplicationUser>? ReturnAllUsers();
     }
 }

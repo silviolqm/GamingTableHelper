@@ -8,10 +8,10 @@ namespace NotificationService.AsyncDataServices
     {
         private readonly IConfiguration _configuration;
         private readonly IEventProcessor _eventProcessor;
-        private IConnection _connection;
-        private IChannel _channel;
-        private string _queueUserEvents;
-        private string _queueTableFullEvents;
+        private IConnection? _connection;
+        private IChannel? _channel;
+        private string _queueUserEvents = string.Empty;
+        private string _queueTableFullEvents = string.Empty;
 
         public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
         {
@@ -27,7 +27,11 @@ namespace NotificationService.AsyncDataServices
             }
 
             stoppingToken.ThrowIfCancellationRequested();
-
+            
+            if (_channel == null)
+            {
+                throw new InvalidOperationException("SetupMessageBusConnection failed. Channel is not initialized.");
+            }
             //User consumer
             var consumerUser = new AsyncEventingBasicConsumer(_channel);
             consumerUser.ReceivedAsync += async (sender, ea) =>
@@ -35,7 +39,7 @@ namespace NotificationService.AsyncDataServices
                 var body = ea.Body;
                 var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                _eventProcessor.ProcessEvent(notificationMessage);
+                await _eventProcessor.ProcessEvent(notificationMessage);
             };
 
             //Game Table Full consumer
@@ -45,7 +49,7 @@ namespace NotificationService.AsyncDataServices
                 var body = ea.Body;
                 var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                _eventProcessor.ProcessEvent(notificationMessage);
+                await _eventProcessor.ProcessEvent(notificationMessage);
             };
             
             await _channel.BasicConsumeAsync(queue: _queueUserEvents, autoAck: false, consumer: consumerUser);
@@ -82,8 +86,6 @@ namespace NotificationService.AsyncDataServices
                     exchange: _configuration["RabbitMQExchangeGameTable"]!,
                     routingKey: string.Empty
                 );
-
-                _connection.ConnectionShutdownAsync += MessageBus_ConnectionShutdown;
             }
             catch (Exception ex)
             {
@@ -92,11 +94,6 @@ namespace NotificationService.AsyncDataServices
                 Console.WriteLine($"Error: {ex.GetType().Name} - {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
             }
-        }
-
-        private async Task MessageBus_ConnectionShutdown(object sender, ShutdownEventArgs @event)
-        {
-            Console.WriteLine($"Connection to Message Bus was shut down.");
         }
 
         public async ValueTask DisposeAsync()
