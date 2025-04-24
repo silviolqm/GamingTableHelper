@@ -26,7 +26,7 @@ Developed by **Sílvio Medeiros** and **Paulo Medeiros** as a portfolio project.
 - Create, search and join game tables created by other users
 - Player notifications when a game table is full and ready to go
 
-# Technologies Used:
+# Technologies Used
 
 | Category           | Tech Stack            |
 | ------------------ | --------------------- |
