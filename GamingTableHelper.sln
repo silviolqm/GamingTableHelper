@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{860A3C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtConfiguration", "Shared\JwtConfiguration\JwtConfiguration.csproj", "{CC8AA2BF-9815-4191-8E5A-7354C7F8B302}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F9A95B0F-9959-4F54-940C-C72117116A6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameSystemService.Tests", "Tests\GameSystemService.Tests\GameSystemService.Tests.csproj", "{D3932E62-DC19-4E32-843C-9C36C4DCC89C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,11 +55,16 @@ Global
 		{CC8AA2BF-9815-4191-8E5A-7354C7F8B302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC8AA2BF-9815-4191-8E5A-7354C7F8B302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC8AA2BF-9815-4191-8E5A-7354C7F8B302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3932E62-DC19-4E32-843C-9C36C4DCC89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3932E62-DC19-4E32-843C-9C36C4DCC89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3932E62-DC19-4E32-843C-9C36C4DCC89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3932E62-DC19-4E32-843C-9C36C4DCC89C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CC8AA2BF-9815-4191-8E5A-7354C7F8B302} = {860A3C12-D1D3-43F2-89B8-4981F972CB94}
+		{D3932E62-DC19-4E32-843C-9C36C4DCC89C} = {F9A95B0F-9959-4F54-940C-C72117116A6B}
 	EndGlobalSection
 EndGlobal
