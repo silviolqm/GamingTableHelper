@@ -1,6 +1,6 @@
-# 🎲GamingTableHelper
+# GamingTableHelper
 
-![.NET](https://img.shields.io/badge/.NET-9.0-blue) ![RabbitMQ](https://img.shields.io/badge/Messaging-RabbitMQ-ff6600?logo=rabbitmq&logoColor=white) ![gRPC](https://img.shields.io/badge/Sync%20Comm-gRPC-8dcaff?logo=grpc) ![JWT](https://img.shields.io/badge/Auth-JWT-yellow) ![Docker](https://img.shields.io/badge/Containerized-Docker-blue?logo=docker) ![Kubernetes](https://img.shields.io/badge/Orchestrated-Kubernetes-blue?logo=kubernetes) ![Skaffold](https://img.shields.io/badge/CI%20Tool-Skaffold-lightgrey) ![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-red?logo=microsoftsqlserver) ![EF Core](https://img.shields.io/badge/ORM-EF%20Core-green)
+![.NET](https://img.shields.io/badge/.NET-9.0-blue) ![RabbitMQ](https://img.shields.io/badge/Messaging-RabbitMQ-ff6600?logo=rabbitmq&logoColor=white) ![gRPC](https://img.shields.io/badge/Sync%20Comm-gRPC-8dcaff?logo=grpc) ![JWT](https://img.shields.io/badge/Auth-JWT-yellow) ![Docker](https://img.shields.io/badge/Containerized-Docker-blue?logo=docker) ![Kubernetes](https://img.shields.io/badge/Orchestrated-Kubernetes-blue?logo=kubernetes) ![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-red?logo=microsoftsqlserver) ![EF Core](https://img.shields.io/badge/ORM-EF%20Core-green)
 
 **GamingTableHelper** is a microservices-based backend application built with .NET and Kubernetes to streamline tabletop gaming tables at conventions. Attendees can easily create, find, and join game tables to play together during the event.
 
