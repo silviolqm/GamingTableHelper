@@ -6,7 +6,7 @@ using RabbitMQ.Client.Events;
 
 namespace GameTableService.AsyncDataServices
 {
-    public class MessageBusPublisher : IMessageBusPublisher
+    public class MessageBusPublisher : IMessageBusPublisher, IAsyncDisposable
     {
         private readonly IConfiguration _configuration;
         private IConnection? _connection;
